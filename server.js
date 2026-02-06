@@ -6,16 +6,33 @@ const fccTesting = require('./freeCodeCamp/fcctesting.js');
 
 const app = express();
 
-fccTesting(app); //For FCC testing purposes
-app.use('/public', express.static(process.cwd() + '/public'));
+fccTesting(app); 
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept",
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
+
+app.set("view engine", "pug");
+app.set("views", "./views/pug");
+
+
+  
+app.use("/public", express.static(process.cwd() + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.route('/').get((req, res) => {
-
+app.route("/").get((req, res) => {
+  res.render("index");
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log('Listening on port ' + PORT);
+  console.log('Listening on port' + PORT);
 });
+
